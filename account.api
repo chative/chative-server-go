@@ -1,0 +1,109 @@
+info(
+	title: account,
+	desc: account,
+	author: ian,
+	email: ian@difft,
+	version: 1.0
+)
+
+type QueryAccIdKeysReq {
+	UID  string   `header:"x-uid"`
+	DID  int      `header:"x-did"`
+	UIDs []string `json:"uids"`
+}
+
+type QueryAccIdKeysResp {
+	Keys           interface{} `json:"keys"`
+	MeetingVersion int         `json:"meetingVersion"`
+}
+
+type GenInviteCodeReq {
+	UID        string `header:"x-uid"`
+	DID        int    `header:"x-did"`
+	Regenerate int    `form:"regenerate,optional"`
+	Short      int    `form:"short,optional,default=0"`
+}
+
+type GenInviteCodeRes {
+	InviteCode string `json:"inviteCode"`
+}
+
+type QueryByInviteCodeReq {
+	UID        string `header:"x-uid"`
+	DID        int    `header:"x-did"`
+	InviteCode string `json:"inviteCode"`
+}
+
+type QueryByInviteCodeRes {
+	UID string `json:"uid"`
+}
+
+type UserInfoByInviteCodeReq {
+	InviteCode string `form:"i"`
+}
+
+type UserInfoByInviteCodeRes {
+	Name string `json:"name"`
+	// AvatarUrl string `json:"avatarUrl"`
+	AvatarContent string `json:"avatarContent"`
+}
+
+type GroupInviteInfoReq {
+	InviteCode string `form:"i"`
+}
+
+type GroupInviteInfoRes {
+	GroupName     string `json:"groupName"`
+	InviterName   string `json:"inviterName"`
+	AvatarContent string `json:"avatarContent"`
+}
+
+type CheckAccExistsReq {
+	Email string `json:"email,optional"`
+	Phone string `json:"phone,optional"`
+}
+
+type CheckAccExistsResp {
+	Exists      bool `json:"exists"`
+	HasWebauthn bool `json:"hasWebauthn"`
+
+	WebauthnUserID string `json:"webauthnUserID"`
+}
+
+type ReportAccReq {
+	Informer string `header:"x-uid"`
+	Suspect  string `json:"uid"`
+	Type     int    `json:"type,optional"`
+	Reason   string `json:"reason,optional"`
+	Block    int    `json:"block,optional,default=-1"`
+}
+
+type ReportAccRes {
+}
+
+service friend-api {
+	@doc(
+		summary: "查询账号id对应的key",
+	)
+	@handler QueryAccIdKeys
+	post /v3/keys/identity/bulk(QueryAccIdKeysReq) returns(QueryAccIdKeysResp)
+	
+	@handler GenInviteCode
+	post /v3/accounts/inviteCode(GenInviteCodeReq) returns(GenInviteCodeRes)
+	
+	@handler QueryByInviteCode
+	put /v3/accounts/querybyInviteCode(QueryByInviteCodeReq) returns(QueryByInviteCodeRes)
+	
+	@handler ExistsUser
+	post /v3/accounts/exists(CheckAccExistsReq) returns(CheckAccExistsResp)
+	
+	@handler ReportAcc
+	post /v3/accounts/report(ReportAccReq) returns(ReportAccRes)
+
+	@handler UserInfoByInviteCode
+	get /v3/web/userinfo(UserInfoByInviteCodeReq) returns(UserInfoByInviteCodeRes)
+	
+	@handler LinkInvitationInfo
+	get /v3/web/linkInvitationInfo(GroupInviteInfoReq) returns(GroupInviteInfoRes)
+	
+}

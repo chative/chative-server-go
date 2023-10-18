@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package pb;
+option go_package="./pb";
+option java_multiple_files = true;
+option java_package = "com.github.difftim.friend";
+option java_outer_classname = "FriendProto";
+
+import "commonV3.proto";
+
+// message Ping {
+//     int64 id = 1;
+// }
+
+message AddRequest {
+  string inviter = 1;
+  string invitee = 2;
+}
+
+message AddResponse {
+  pb.BaseResponse base = 1;
+}
+
+message ListRequest {
+  string user = 1;
+}
+
+message ListResponse {
+  pb.BaseResponse base = 1;
+  repeated string friends = 2;
+}
+
+message ExistRequest {
+  string user = 1;
+  string friend = 2;
+}
+
+message ExistResponse {
+  pb.BaseResponse base = 1;
+  bool exist = 2;
+}
+
+message Response {
+  pb.BaseResponse base = 1;
+  string pong = 2;
+}
+
+message HowToMetRequest {
+  repeated string src = 1;
+  string dst = 2;
+  string lang = 3;
+  string sourceQueryType = 4;
+}
+
+message HowToMetResponse {
+  pb.BaseResponse base = 1;
+  repeated string describe = 2;
+  repeated string findyou = 3;
+}
+
+service Friend {
+  rpc Add (AddRequest) returns (AddResponse);
+  rpc List (ListRequest) returns (ListResponse);
+  rpc Exist (ExistRequest) returns (ExistResponse);
+  rpc HowToMet (HowToMetRequest) returns (HowToMetResponse);
+  // rpc Ping (Ping) returns(Response);
+}

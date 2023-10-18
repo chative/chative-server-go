@@ -1,0 +1,115 @@
+syntax = "proto3";
+package pb;
+
+option go_package="./pb";
+option java_multiple_files = true;
+option java_package = "com.github.difftim.accountgrpc";
+import "commonV3.proto";
+
+message SyncProfileRequest {
+  string uid = 1;
+  string email = 2;
+  string phone = 3;
+  string emailHash = 4;
+  string phoneHash = 5;
+}
+
+message SyncProfileResponse {
+  pb.BaseResponse base = 1;
+}
+
+message GenEmailVcodeRequest {
+  string email = 1;
+}
+
+message GenEmailVcodeResponse {
+  pb.BaseResponse base = 1;
+  string vcode = 2;
+}
+
+message CheckEmailVcodeRequest {
+  string email = 1;
+  string emailHash = 2;
+  string vcode = 3;
+}
+
+message CheckEmailVcodeResponse {
+  pb.BaseResponse base = 1;
+}
+
+message HashUserMetaRequest {
+  string email = 1;
+  string phone = 2;
+}
+
+message HashUserMetaResponse {
+  pb.BaseResponse base = 1;
+  string emailHash = 2;
+  string phoneHash = 3;
+}
+
+message DelUserHashRequest {
+  string uid = 1;
+  bool delEmail = 2;
+  bool delPhone = 3;  
+}
+
+message DelUserHashResponse {
+  pb.BaseResponse base = 1;
+}
+
+message InitUserProfileRequest {
+  string uid = 1;
+  string emailHash = 2;
+  string phoneHash = 3;
+}
+
+message InitUserProfileResponse {
+  pb.BaseResponse base = 1;
+}
+
+message GetUserProfileRequest {
+  string uid = 1;
+  string email = 2;
+  string phone = 3;
+  string emailHash = 4;
+  string phoneHash = 5;
+}
+
+message GetUserProfileResponse {
+  pb.BaseResponse base = 1;
+  string uid = 2;
+  string emailHash = 3;
+  string phoneHash = 4;
+}
+
+message DisableSearchRequest {
+  string uid = 1;
+}
+message DisableSearchResponse{
+  pb.BaseResponse base = 1;
+}
+
+message DeleteAccReq {
+  string uid = 1;
+}
+
+message DeleteAccResp {
+  pb.BaseResponse base = 1;
+}
+
+service Account {
+  rpc SyncProfile(SyncProfileRequest) returns(SyncProfileResponse);
+
+  rpc GenEmailVerificationCode (GenEmailVcodeRequest) returns (GenEmailVcodeResponse);
+  rpc CheckEmailVerificationCode (CheckEmailVcodeRequest) returns (CheckEmailVcodeResponse);
+
+  rpc HashUserMeta (HashUserMetaRequest) returns (HashUserMetaResponse);
+  rpc InitUserProfile (InitUserProfileRequest) returns (InitUserProfileResponse);
+  rpc GetUserProfile (GetUserProfileRequest) returns (GetUserProfileResponse);
+  rpc DelUserHash (DelUserHashRequest) returns (DelUserHashResponse);
+
+  rpc DisableSearch (DisableSearchRequest) returns (DisableSearchResponse);
+
+  rpc DeleteAccount (DeleteAccReq) returns (DeleteAccResp);
+}

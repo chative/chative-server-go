@@ -1,0 +1,29 @@
+info(
+	title: upgrade
+	desc:  upgrade
+	author: ian,
+	email: ian@difft,
+	version: 1.0
+)
+
+type CheckUpdateReq {
+	UID        string `header:"x-uid"`
+	DID        int    `header:"x-did"`
+	CurVersion string `form:"version"`
+}
+
+type CheckUpdateRes {
+	Update bool   `json:"update"`
+	Force  bool   `json:"force"`
+	Url    string `json:"url"`
+	Notes  string `json:"notes"`
+}
+
+service friend-api {
+    @doc(
+        summary: "check update",
+    )
+    @handler checkAndroidUpdate
+    get /v3/upgrade/android/check(CheckUpdateReq) returns(CheckUpdateRes)
+
+}

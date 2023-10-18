@@ -1,0 +1,86 @@
+info(
+	title: friend,
+	desc: friend,
+	author: ian,
+	email: ian@difft,
+	version: 1.0
+)
+
+import "conversation.api"
+import "directory.api"
+import "account.api"
+import "upgrade.api"
+import "webauthn.api"
+import "reminder.api"
+
+type AddFriendReq {
+	InviteCode string `json:"inviteCode"`
+	UID        string `header:"x-uid"`
+	DID        int    `header:"x-did"`
+}
+
+type AddFriendRes {
+	Inviter string `json:"inviter"`
+}
+
+type LocationReq {
+	XForwardedFor string `header:"X-Forwarded-For"`
+}
+
+type LocationRes {
+	CountryName string `json:"countryName"`
+	CountryCode string `json:"countryCode"`
+	DialingCode string `json:"dialingCode"`
+}
+
+type AskFriendReq {
+	Inviter string          `header:"x-uid"`
+	DID     int             `header:"x-did"`
+	Invitee string          `json:"uid"`
+	Source  *FindFriendPath `json:"source,optional"`
+	Action  string          `json:"action,optional"`
+}
+
+type FindFriendPath {
+	Type    string `json:"type"`
+	GroupID string `json:"groupID,optional"`
+	UID     string `json:"uid,optional"`
+}
+type AskFriendRes {
+	AskID int `json:"id"`
+}
+
+type FriendAgreeReq {
+	Invitee string `header:"x-uid"`
+	DID     int    `header:"x-did"`
+	AskID   uint   `path:"id"`
+}
+
+type FriendAgreeRes {
+}
+
+type DelFriendReq {
+	Operator string `header:"x-uid"`
+	DID      int    `header:"x-did"`
+	UID      string `path:"uid"`
+}
+
+type EmptyRes {
+}
+
+service friend-api {
+	@handler addFriend
+	put /v1/friend(AddFriendReq) returns(AddFriendRes)
+	
+	@handler getLocation
+	get /v1/utils/location(LocationReq) returns(LocationRes)
+	
+	@handler askNewFriend
+	post /v3/friend/ask(AskFriendReq) returns(AskFriendRes)
+	
+	@handler friendAgree
+	put /v3/friend/ask/:id/agree(FriendAgreeReq) returns(FriendAgreeRes)
+	
+	@handler deleteFriend
+	delete /v3/friend/:uid(DelFriendReq) returns(EmptyRes)
+}

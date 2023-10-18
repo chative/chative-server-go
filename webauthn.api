@@ -1,0 +1,144 @@
+info(
+	title: webauthn
+	desc: passkeys
+	author: ian
+	email: ian@difft
+	version: 1.0
+)
+
+type WebauthnExistsReq {
+	Email string `json:"email,optional"`
+	Phone string `json:"phone,optional"`
+}
+
+type WebauthnExistsRes {
+	UserID string `json:"userID"`
+}
+
+type WebauthnRegInitReq {
+	ChatUID string `header:"x-uid"`
+	DID     int    `header:"x-did"`
+}
+
+type WebauthnRP {
+	Name string `json:"name"`
+	ID   string `json:"id"`
+}
+
+type WebauthnUser {
+	Name        string `json:"name"`
+	DisplayName string `json:"displayName"`
+	ID          string `json:"id"`
+}
+
+type WebauthnPubKeyCredParam {
+	Type string `json:"type"`
+	Alg  int    `json:"alg"`
+}
+
+type WebauthnAuthenticatorSelection {
+	RequireResidentKey bool   `json:"requireResidentKey"`
+	ResidentKey        string `json:"residentKey"`
+	UserVerification   string `json:"userVerification"`
+}
+
+type WebauthnRegResPublic {
+	Rp                     WebauthnRP                     `json:"rp"`
+	User                   WebauthnUser                   `json:"user"`
+	Challenge              string                         `json:"challenge"`
+	PubKeyCredParams       []WebauthnPubKeyCredParam      `json:"pubKeyCredParams"`
+	Timeout                int                            `json:"timeout"`
+	AuthenticatorSelection WebauthnAuthenticatorSelection `json:"authenticatorSelection"`
+	Attestation            string                         `json:"attestation"`
+}
+
+type WebauthnRegInitRes {
+	PublicKey WebauthnRegResPublic `json:"publicKey"`
+}
+
+type WebauthnRegCliRes {
+	ClientDataJSON    string   `json:"clientDataJSON"`
+	AttestationObject string   `json:"attestationObject"`
+	Transports        []string `json:"transports,optional"`
+}
+
+type WebauthnRegFinReq {
+	ChatUID                 string            `header:"x-uid"`
+	DID                     int               `header:"x-did"`
+	Type                    string            `json:"type"`
+	ID                      string            `json:"id"`
+	RawID                   string            `json:"rawId"`
+	AuthenticatorAttachment string            `json:"authenticatorAttachment,optional"`
+	Response                WebauthnRegCliRes `json:"response"`
+	Transports              []string          `json:"transports,optional"`
+}
+
+type WebauthnRegFinRes {
+}
+
+type WebauthnLoginInitReq {
+	UserID string `json:"userID"`
+}
+
+type WebauthnLoginAllowCredential {
+	Type string `json:"type"`
+	ID   string `json:"id"`
+}
+
+type WebauthnLoginInitPK {
+	Challenge        string                         `json:"challenge"`
+	Timeout          int                            `json:"timeout"`
+	RpID             string                         `json:"rpId"`
+	AllowCredentials []WebauthnLoginAllowCredential `json:"allowCredentials"`
+	UserVerification string                         `json:"userVerification"`
+}
+
+type WebauthnLoginInitRes {
+	PublicKey WebauthnLoginInitPK `json:"publicKey"`
+}
+
+type WebauthnLoginCliRes {
+	ClientDataJSON    string `json:"clientDataJson"`
+	AuthenticatorData string `json:"authenticatorData"`
+	Signature         string `json:"signature"`
+	UserHandle        string `json:"userHandle"`
+}
+
+type WebauthnLoginFinReq {
+	ID       string              `json:"id"`
+	RawID    string              `json:"rawId"`
+	Type     string              `json:"type"`
+	Response WebauthnLoginCliRes `json:"response"`
+
+	UA              string `header:"User-Agent"`
+	SupportTransfer int    `json:"supportTransfer,optional,default=0"`
+}
+
+type TransferTokens {
+	Tdtoken    string `json:"tdtoken"`
+	Logintoken string `json:"logintoken"`
+} 
+type WebauthnLoginFinRes {
+	Transferable     int            `json:"transferable"`
+	Tokens           TransferTokens `json:"tokens"`
+	VerificationCode string         `json:"verificationCode"`
+	Account          string         `json:"account"`
+	RequirePin       bool           `json:"requirePin"`
+}
+
+service friend-api {
+	@handler webauthnExists
+	post /v3/webauthn/user(WebauthnExistsReq) returns(WebauthnExistsRes)
+	@handler webauthnRegInit
+	get /v3/webauthn/registration/initialize(WebauthnRegInitReq) returns(WebauthnRegInitRes)
+	@handler webauthnRegFin
+	post /v3/webauthn/registration/finalize(WebauthnRegFinReq) returns(WebauthnRegFinRes)
+	
+	@handler webauthnLoginInit
+	post /v3/webauthn/login/initialize(WebauthnLoginInitReq) returns(WebauthnLoginInitRes)
+	@handler webauthnLoginFin
+	post /v3/webauthn/login/finalize(WebauthnLoginFinReq) returns(WebauthnLoginFinRes)
+
+
+	
+}

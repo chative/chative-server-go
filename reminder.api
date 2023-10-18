@@ -1,0 +1,91 @@
+info(
+	title: reminder
+	desc: reminder
+	author: ian
+	email: ian
+	version: 1.0
+)
+
+type CreateReminderReq {
+	UID string `header:"x-uid"`
+	DID int    `header:"x-did"`
+
+	Conversation string `json:"conversation"`
+	Type         string `json:"type"`
+	Timezone     string `json:"timezone"`
+	Timestamp    int64  `json:"timestamp"`
+	Repeat       int `json:"repeat"`
+	Description  string `json:"description"`
+}
+
+type CreateReminderResp {
+	ID           uint   `json:"reminderId"`
+	Version      int    `json:"version"`
+	Type         string `json:"type"`
+	Creator      string `json:"creator,omitempty"`
+	Timezone     string `json:"timezone"`
+	Timestamp    int64  `json:"timestamp"`
+	ModifyTime   int64  `json:"modifyTime"`
+	Conversation string `json:"conversation"`
+	Repeat       int `json:"repeat"`
+	Description  string `json:"description"`
+}
+
+type UpdateReminderReq {
+	ID  uint   `path:"id"`
+	UID string `header:"x-uid"`
+	DID int    `header:"x-did"`
+
+	Timezone    string `json:"timezone"`
+	Timestamp   int64  `json:"timestamp"`
+	Repeat      int `json:"repeat"`
+	Description string `json:"description"`
+}
+
+type UpdateReminderResp {
+	ID           uint   `json:"reminderId"`
+	Version      int    `json:"version"`
+	Type         string `json:"type"`
+	Timezone     string `json:"timezone"`
+	Timestamp    int64  `json:"timestamp"`
+	ModifyTime   int64  `json:"modifyTime"`
+	Conversation string `json:"conversation"`
+	Repeat       int `json:"repeat"`
+	Description  string `json:"description"`
+}
+
+type DeleteReminderReq {
+	UID string `header:"x-uid"`
+	DID int    `header:"x-did"`
+
+	IDs string `path:"ids"`
+}
+
+type DeleteReminderResp {
+}
+
+type GetReminderReq {
+	UID string `header:"x-uid"`
+	DID int    `header:"x-did"`
+
+	Conversation string `path:"conversation"`
+	Type         string `form:"type"`
+}
+
+type GetReminderResp {
+	List []CreateReminderResp `json:"list"`
+}
+
+service friend-api {
+	@handler createReminder
+	post /v3/conversationconfig/reminder(CreateReminderReq) returns(CreateReminderResp)
+	
+	@handler updateReminder
+	put /v3/conversationconfig/reminder/:id(UpdateReminderReq) returns(UpdateReminderResp)
+	
+	@handler deleteReminder
+	delete /v3/conversationconfig/reminder/:ids(DeleteReminderReq) returns(DeleteReminderResp)
+	
+	@handler getReminder
+	get /v3/conversationconfig/reminder/:conversation(GetReminderReq) returns(GetReminderResp)
+}

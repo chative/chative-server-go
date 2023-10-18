@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package pb;
+option go_package="./pb";
+option java_multiple_files = true;
+option java_package = "com.github.difftim.regis";
+import "commonV3.proto";
+
+message SendSMSRequest {
+  string phone = 1;
+}
+
+message SendSMSResponse {
+  pb.BaseResponse base = 1;
+}
+
+
+message VerifySMSRequest {
+  string phone = 1;
+  string code = 2;
+}
+
+message VerifySMSResponse {
+  pb.BaseResponse base = 1;
+}
+
+service Regiter {
+  rpc SendSMS(SendSMSRequest) returns(SendSMSResponse);
+  rpc VerifySMS(VerifySMSRequest) returns(VerifySMSResponse);
+}

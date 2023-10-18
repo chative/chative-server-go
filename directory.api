@@ -1,0 +1,62 @@
+info(
+	title: directory,
+	desc: directory,
+	author: ian,
+	email: ian@difft,
+	version: 1.0
+)
+
+type FetchSaltReq {
+	UID string `header:"x-uid"`
+	DID int    `header:"x-did"`
+}
+
+type FetchSaltResp {
+	Salt string `json:"salt"`
+}
+
+type SetProfileReq {
+	UID string `header:"x-uid"`
+	DID int    `header:"x-did"`
+
+	SearchByEmail  int `json:"searchByEmail,optional,default=-1"`
+	SearchByPhone  int `json:"searchByPhone,optional,default=-1"`
+	PasskeysSwitch int `json:"passkeysSwitch,optional,default=-1"`
+}
+
+type ProfileResp {
+	SearchByEmail  int `json:"searchByEmail"`
+	SearchByPhone  int `json:"searchByPhone"`
+	PasskeysSwitch int `json:"passkeysSwitch"`
+}
+
+type GetProfileReq {
+	UID string `header:"x-uid"`
+	DID int    `header:"x-did"`
+}
+
+type DirectorySearchReq {
+	UID   string   `header:"x-uid"`
+	DID   int      `header:"x-did"`
+	Ver   int      `json:"ver"`
+	Hashs []string `json:"hashs"`
+}
+
+type DirectorySearchRes {
+	Results interface{} `json:"results"`
+}
+
+service friend-api {
+	@handler fetchSalt
+	get /v3/directory/searchsalt(FetchSaltReq) returns(FetchSaltResp)
+	
+	@handler searchContacts
+	post /v3/directory/search(DirectorySearchReq) returns(DirectorySearchRes)
+	
+	@handler setProfile
+	put /v3/directory/profile(SetProfileReq) returns(ProfileResp)
+	
+	@handler getProfile
+	get /v3/directory/profile(GetProfileReq) returns(ProfileResp)
+	
+}

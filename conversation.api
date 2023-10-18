@@ -1,0 +1,40 @@
+info(
+	title: conversation,
+	desc: conversation,
+	author: ian,
+	email: ian@difft,
+	version: 1.0
+)
+
+type Conversation struct {
+    Ver int `json:"ver"`
+    Conversation string `json:"conversation"`
+    MessageExpiry int64 `json:"messageExpiry"`
+}
+
+type FetchConversationRequest struct {
+    UID           string `header:"x-uid"`
+	DID           int    `header:"x-did"`
+    Conversations []string `json:"conversations"`
+}
+
+type FetchConversationResponse struct {
+    Conversations []Conversation `json:"conversations"`
+}
+
+type UpdateConversationReq struct {
+	UID           string `header:"x-uid"`
+	DID           int    `header:"x-did"`
+    Conversation  string `path:"id"`
+    MessageExpiry int64 `json:"messageExpiry"`
+}
+
+
+
+service friend-api {
+    @handler fetchConversationConfig
+    post /v1/conversationconfig/share(FetchConversationRequest) returns(FetchConversationResponse)
+    @handler updateConversationConfig
+    put /v1/conversationconfig/share/:id(UpdateConversationReq) returns(Conversation)
+
+}
