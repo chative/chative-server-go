@@ -58,10 +58,21 @@ message HowToMetResponse {
   repeated string findyou = 3;
 }
 
+message IsFriendRequest {
+  string uid = 1;
+  repeated string checkList = 2;
+}
+
+message IsFriendResponse {
+  pb.BaseResponse base = 1;
+  // repeated string isFriendList = 2;
+}
+
 service Friend {
   rpc Add (AddRequest) returns (AddResponse);
   rpc List (ListRequest) returns (ListResponse);
   rpc Exist (ExistRequest) returns (ExistResponse);
   rpc HowToMet (HowToMetRequest) returns (HowToMetResponse);
+  rpc IsFriend (IsFriendRequest) returns (IsFriendResponse);
   // rpc Ping (Ping) returns(Response);
 }

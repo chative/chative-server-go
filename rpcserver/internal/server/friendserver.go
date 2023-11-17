@@ -41,3 +41,8 @@ func (s *FriendServer) HowToMet(ctx context.Context, in *pb.HowToMetRequest) (*p
 	l := logic.NewHowToMetLogic(ctx, s.svcCtx)
 	return l.HowToMet(in)
 }
+
+func (s *FriendServer) IsFriend(ctx context.Context, in *pb.IsFriendRequest) (*pb.IsFriendResponse, error) {
+	l := logic.NewIsFriendLogic(ctx, s.svcCtx)
+	return l.IsFriend(in)
+}
