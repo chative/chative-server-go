@@ -20,7 +20,7 @@ type Config struct {
 
 type SMS struct {
 	Twilio *Twilio
-	B2M    *B2M
+	// B2M    *B2M
 }
 
 var (
@@ -30,7 +30,7 @@ var (
 func Init(cfg Config) *SMS {
 	sms = &SMS{
 		Twilio: NewTwilio(cfg),
-		B2M:    NewB2M(cfg),
+		// B2M:    NewB2M(cfg),
 	}
 	rand.Seed(time.Now().UnixMilli())
 	return sms
